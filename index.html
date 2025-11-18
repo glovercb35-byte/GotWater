@@ -137,3 +137,149 @@ document.querySelectorAll('nav.top a').forEach(a => {
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Georgia Power – Got Water Dashboard</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Plotly -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        background: #f5f7fa;
+        color: #1f2a44;
+        line-height: 1.5;
+    }
+
+    header {
+        background: #1f2a44;
+        color: white;
+        padding: 35px 40px;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    section {
+        padding: 60px 80px;
+        max-width: 1150px;
+        margin: auto;
+    }
+
+    h2 {
+        font-size: 32px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        color: #1f2a44;
+    }
+
+    h3 {
+        margin-top: 40px;
+        font-size: 24px;
+    }
+
+    .viz-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .viz-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.08);
+        width: 48%;
+    }
+
+    .arcgis-section img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+    }
+
+    .caption {
+        margin-bottom: 50px;
+        font-size: 17px;
+        font-weight: 500;
+        color: #23365d;
+    }
+</style>
+
+</head>
+<body>
+
+<header>
+    Georgia Power – Got Water Dashboard
+</header>
+
+<section id="overview">
+    <h2>Overview Dashboard</h2>
+    <p>This dashboard summarizes Georgia Power’s energy mix, capacity, water withdrawals/consumption, scenario modeling, AI load impacts, and resource planning insights.</p>
+
+    <!-- Example container for dashboards already in your working version -->
+    <div id="energyMixChart"></div>
+    <div id="capacityChart"></div>
+    <div id="waterChart"></div>
+</section>
+
+<section id="scenarios">
+    <h2>Scenario Modeling</h2>
+    <p>Interactive scenario comparisons — Status Quo, IRP Expansion, and Renewable Priority — visualizing capacity, water use, and year-over-year changes.</p>
+
+    <div id="scenarioChart"></div>
+</section>
+
+<section id="ai">
+    <h2>AI & Data Center Load Growth</h2>
+    <p>Modeled from Georgia’s 2025–2036 IRP load projections. Reflects projected increases in hyperscale data center demand and associated water cooling implications.</p>
+
+    <div id="aiChart"></div>
+</section>
+
+<section id="montecarlo">
+    <h2>Monte Carlo Projection</h2>
+    <p>Summer peak load uncertainty based on P10, P50, and P90 capacity ranges (2025–2036).</p>
+
+    <div id="monteCarloChart"></div>
+</section>
+
+<section id="policy">
+    <h2>Policy Implications</h2>
+    <p>Insights for Georgia Power, municipalities, regulators, and data center operators for balancing electrification, water conservation, and reliability.</p>
+</section>
+
+<!-- ⭐⭐⭐ NEW SECTION YOU REQUESTED ⭐⭐⭐ -->
+
+<section id="arcgis" class="arcgis-section">
+    <h2>ArcGIS Visualizations</h2>
+
+    <h3>1. Data Centers</h3>
+    <img src="data.png" alt="Data Center Map">
+    <div class="caption">Planned and existing data center locations across Georgia.</div>
+
+    <h3>2. Power Infrastructure</h3>
+    <img src="power.png" alt="Power Infrastructure Map">
+    <div class="caption">Electric generating station locations across the state.</div>
+
+    <h3>3. Water Infrastructure</h3>
+    <img src="water.png" alt="Water Map">
+    <div class="caption">Major water station and resource areas across Georgia.</div>
+</section>
+
+<footer style="padding:40px; text-align:center; background:#1f2a44; color:white; margin-top:40px;">
+    © 2025 • Got Water? – Cherry Street Energy + UGA SUST4500S
+</footer>
+
+</body>
+</html>
