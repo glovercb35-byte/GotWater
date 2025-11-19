@@ -2,125 +2,189 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Got Water? Georgia Power–Water Nexus Dashboard</title>
+  <title>Got Water? Georgia Power IRP – Energy & Water Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
       --bg: #050816;
-      --bg-card: #0b1020;
-      --bg-card-soft: #11172a;
-      --accent: #42e6a4;
-      --accent-soft: rgba(66, 230, 164, 0.18);
-      --accent2: #4fa9ff;
-      --accent-red: #ff5c5c;
-      --text-main: #f7fafc;
+      --card: #0b1020;
+      --card-soft: #12182b;
+      --accent: #4fd1c5;
+      --accent-soft: #2d9cdb;
+      --text-main: #edf2f7;
       --text-muted: #a0aec0;
-      --border-subtle: #222b44;
-      --radius-lg: 18px;
+      --border-subtle: rgba(255,255,255,0.06);
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.65);
       --radius-xl: 22px;
-      --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.65);
-      --shadow-sm: 0 10px 25px rgba(0, 0, 0, 0.45);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
+      padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Roboto", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #050816 55%);
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 36%, #000 100%);
       color: var(--text-main);
-      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: var(--accent2); text-decoration: none; }
-
-    /* Layout */
-
     .page {
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 28px 18px 64px;
+      margin: 0 auto 72px auto;
+      padding: 28px 18px 64px 18px;
     }
 
-    header {
-      margin-bottom: 28px;
+    header.hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 26px;
+      margin-bottom: 32px;
+      align-items: stretch;
     }
 
-    .pill {
+    @media (max-width: 900px) {
+      header.hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-text {
+      background: linear-gradient(145deg, rgba(20,26,52,0.98), rgba(5,10,25,0.98));
+      border-radius: var(--radius-xl);
+      padding: 24px 22px 20px 22px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-text::before {
+      content: "";
+      position: absolute;
+      inset: -120px;
+      background:
+        radial-gradient(circle at 0 0, rgba(79,209,197,0.08), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(45,156,219,0.12), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.12);
-      color: var(--text-muted);
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,118,110,0.13);
+      border: 1px solid rgba(94,234,212,0.22);
       font-size: 11px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #a5f3fc;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
     }
 
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(66, 230, 164, 0.15);
+    .hero-pill span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4fd1c5;
+      box-shadow: 0 0 12px rgba(79,209,197,0.9);
     }
 
-    h1 {
-      margin-top: 16px;
-      font-size: clamp(26px, 4vw, 32px);
-      letter-spacing: 0.02em;
+    .hero-title {
+      margin: 0 0 8px 0;
+      font-size: clamp(26px, 3vw, 32px);
+      line-height: 1.18;
+      letter-spacing: 0.01em;
+      position: relative;
+      z-index: 1;
     }
 
-    .subtitle {
-      margin-top: 6px;
+    .hero-subtitle {
+      margin: 0 0 14px 0;
+      font-size: 13px;
       color: var(--text-muted);
-      font-size: 14px;
-      max-width: 720px;
+      position: relative;
+      z-index: 1;
     }
 
-    .meta-row {
-      margin-top: 14px;
+    .hero-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      font-size: 12px;
+      gap: 10px 18px;
+      font-size: 11px;
       color: var(--text-muted);
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
     }
 
-    .meta-row span {
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    main {
+    .hero-meta span strong {
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .hero-chip-row {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
     }
 
-    section {
-      background: radial-gradient(circle at top left, #1e293b 0%, #050816 55%);
-      border-radius: var(--radius-xl);
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      font-size: 11px;
+      color: #cbd5f5;
+      background: rgba(15,23,42,0.92);
+    }
+
+    .hero-images {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .hero-images img {
+      width: 100%;
+      border-radius: 18px;
+      object-fit: cover;
       border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-lg);
-      padding: 18px 18px 20px;
+      background: #020617;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     }
 
-    section.compact {
-      padding: 14px 14px 16px;
-      box-shadow: var(--shadow-sm);
+    .hero-images img:nth-child(1) { aspect-ratio: 16/9; }
+    .hero-images img:nth-child(2),
+    .hero-images img:nth-child(3) { aspect-ratio: 16/10; }
+
+    .section {
+      background: linear-gradient(145deg, #050816, #020617);
+      border-radius: var(--radius-xl);
+      padding: 18px 20px 18px 20px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 22px;
     }
 
     .section-header {
@@ -128,642 +192,761 @@
       justify-content: space-between;
       align-items: baseline;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .section-title {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 18px;
+      margin: 0;
     }
 
     .section-kicker {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
+      font-size: 12px;
       color: var(--text-muted);
+      margin: 0 0 4px 0;
     }
 
-    .section-subtitle {
-      font-size: 12px;
+    .section-note {
+      font-size: 11px;
       color: var(--text-muted);
     }
 
     .grid-2 {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0,1.1fr) minmax(0,1.1fr);
       gap: 16px;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    @media (max-width: 880px) {
-      .grid-2, .grid-3 {
-        grid-template-columns: minmax(0, 1fr);
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
       }
     }
 
-    .card-soft {
-      background: radial-gradient(circle at top, #111827 0%, #020617 70%);
+    .card-inner {
+      background: radial-gradient(circle at top left, #111827, #020617 56%);
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(148, 163, 184, 0.16);
-      padding: 10px 11px 12px;
-      height: 100%;
+      padding: 14px 16px 14px 16px;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      min-height: 260px;
     }
 
-    .card-soft h3 {
-      font-size: 13px;
-      margin-bottom: 4px;
+    .card-inner h3 {
+      margin: 0 0 2px 0;
+      font-size: 14px;
     }
 
-    .card-soft p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .image-strip {
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.16);
-    }
-
-    .image-strip img {
-      display: block;
-      width: 100%;
-      height: 190px;
-      object-fit: cover;
-    }
-
-    .image-caption {
+    .card-inner p {
+      margin: 0;
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 4px;
-      text-align: center;
     }
 
-    .chart {
-      width: 100%;
-      height: 280px;
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 8px 0 4px 0;
     }
 
-    .chart-tall {
-      height: 320px;
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 11px;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 10px;
+    .control-group label {
       color: var(--text-muted);
-      gap: 4px;
     }
 
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .small-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
-
-    .scenario-label {
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--accent2);
+    select, input[type="range"] {
+      background: rgba(15,23,42,0.96);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 4px 9px;
+      outline: none;
     }
 
     input[type="range"] {
-      width: 100%;
-      margin-top: 8px;
+      width: 180px;
+      padding: 0;
+      accent-color: var(--accent);
     }
 
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
+    canvas {
+      width: 100% !important;
+      height: 260px !important;
+    }
+
+    .small-canvas {
+      height: 210px !important;
+    }
+
+    .donut-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 960px) {
+      .donut-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .donut-card {
+      background: radial-gradient(circle at top, #111827, #020617 60%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 12px 6px 12px;
+    }
+
+    .donut-card h4 {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+    }
+
+    .donut-card p {
+      margin: 0;
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 3px;
     }
 
-    footer {
-      margin-top: 10px;
-      text-align: right;
-      font-size: 10px;
+    .policy-heatmap {
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    .policy-table {
+      border-collapse: collapse;
+      min-width: 520px;
+      font-size: 11px;
+    }
+
+    .policy-table th,
+    .policy-table td {
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 6px 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .policy-table th:first-child,
+    .policy-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      white-space: normal;
+    }
+
+    .policy-table thead th {
+      background: rgba(15,23,42,0.9);
+    }
+
+    /* Heatmap coloring by score (1–5) */
+    .policy-table td[data-score="1"] { background: #b91c1c; color: #fee2e2; }
+    .policy-table td[data-score="2"] { background: #f97316; color: #111827; }
+    .policy-table td[data-score="3"] { background: #fde68a; color: #1f2933; }
+    .policy-table td[data-score="4"] { background: #a3e635; color: #052e16; }
+    .policy-table td[data-score="5"] { background: #16a34a; color: #ecfdf5; }
+
+    .footnote {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .mc-summary {
+      margin-top: 6px;
+      font-size: 11px;
       color: var(--text-muted);
     }
   </style>
 </head>
-
 <body>
   <div class="page">
-    <header>
-      <div class="pill">
-        <span class="pill-dot"></span>
-        Georgia Power IRP · SUST 4500 Capstone
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-text">
+        <div class="hero-pill">
+          <span class="dot"></span>
+          GEORGIA WATER–ENERGY NEXUS
+        </div>
+        <h1 class="hero-title">Got Water? Identifying Water Constraints amid Growing Energy Demand in Georgia</h1>
+        <p class="hero-subtitle">
+          Scenario-based dashboard linking Georgia Power’s 2025 IRP capacity mix to long-run water withdrawals and consumption under AI-driven load growth.
+        </p>
+
+        <div class="hero-meta">
+          <span><strong>Prepared by:</strong> Chloe Glover, Natalie, Clarissa</span>
+          <span><strong>Course:</strong> SUST 4500 – Capstone</span>
+          <span><strong>Project Partner:</strong> Cherry Street Energy</span>
+        </div>
+
+        <div class="hero-chip-row">
+          <div class="chip">Status Quo IRP</div>
+          <div class="chip">IRP Expansion</div>
+          <div class="chip">Renewable Priority</div>
+          <div class="chip">Water-Constrained Planning</div>
+        </div>
       </div>
-      <h1>Got Water? Identifying Water Constraints Amid Growing Energy Demand in Georgia</h1>
-      <p class="subtitle">
-        Scenario modeling of Georgia Power’s 2025 Integrated Resource Plan (IRP) to understand how
-        different capacity pathways shift summer reliability and water consumption across nuclear,
-        gas, coal, hydro, solar, and other resources.
-      </p>
-      <div class="meta-row">
-        <span>Student Team: Chloe Glover · Natalie · Clarissa</span>
-        <span>Course: SUST 4500 – Sustainability Capstone</span>
-        <span>Project Partner: Cherry Street Energy &amp; UGA</span>
+
+      <div class="hero-images">
+        <img src="data.png" alt="Georgia AI and demand growth GIS view">
+        <img src="power.png" alt="Georgia power infrastructure GIS view">
+        <img src="water.png" alt="Georgia surface-water withdrawals GIS view">
       </div>
     </header>
 
-    <main>
-      <!-- Top visuals / GIS exports -->
-      <section class="compact">
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">Context</div>
-            <div class="section-title">Study Area &amp; Data Footprint</div>
-          </div>
-          <span class="badge">
-            <span class="badge-dot"></span> GIS exports from ArcGIS Pro
-          </span>
-        </div>
-        <div class="grid-3">
-          <div>
-            <div class="image-strip">
-              <img src="data.png" alt="Georgia power &amp; water data footprint" />
-            </div>
-            <div class="image-caption">Data inputs and plant-level coverage across Georgia.</div>
-          </div>
-          <div>
-            <div class="image-strip">
-              <img src="power.png" alt="Georgia energy infrastructure map" />
-            </div>
-            <div class="image-caption">Summer capacity and grid infrastructure by region.</div>
-          </div>
-          <div>
-            <div class="image-strip">
-              <img src="water.png" alt="Georgia water basins and withdrawals" />
-            </div>
-            <div class="image-caption">Watersheds and thermoelectric withdrawals overlay.</div>
-          </div>
-        </div>
-      </section>
+    <!-- OVERVIEW & DONUTS -->
+    <section class="section">
+      <p class="section-kicker">Overview</p>
+      <div class="section-header">
+        <h2 class="section-title">2036 Capacity Mix by Scenario</h2>
+        <p class="section-note">Donuts show the end-state portfolio split across Nuclear, Gas, Coal, Hydro, Solar, and Other.</p>
+      </div>
 
-      <!-- Overview cards -->
-      <section class="compact">
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">Quick Read</div>
-            <div class="section-title">What the Dashboard Shows</div>
-          </div>
+      <div class="donut-grid">
+        <div class="donut-card">
+          <h4>Status Quo</h4>
+          <p>IRP portfolio extended with limited new renewables and significant gas additions.</p>
+          <canvas id="donutStatusQuo" class="small-canvas"></canvas>
         </div>
-        <div class="grid-3">
-          <div class="card-soft">
-            <h3>Three Capacity Pathways</h3>
-            <p>
-              <strong>Status Quo</strong>, <strong>IRP Expansion</strong>, and
-              <strong>Renewable Priority</strong> are modeled using Georgia Power IRP numbers for
-              2025–2036 to stress-test the summer portfolio.
-            </p>
-          </div>
-          <div class="card-soft">
-            <h3>Energy–Water Tradeoffs</h3>
-            <p>
-              Nuclear, gas, and coal drive reliability but also dominate cooling withdrawals,
-              especially under gas-heavy portfolios and AI-driven load growth.
-            </p>
-          </div>
-          <div class="card-soft">
-            <h3>Policy Levers</h3>
-            <p>
-              Demand-side management, renewable expansion, and cooling retrofits are scored for
-              reliability, water stress reduction, cost, and feasibility to highlight co-benefits.
-            </p>
-          </div>
+        <div class="donut-card">
+          <h4>IRP Expansion</h4>
+          <p>Higher total capacity via new gas + solar while maintaining existing baseload assets.</p>
+          <canvas id="donutIRP" class="small-canvas"></canvas>
         </div>
-      </section>
+        <div class="donut-card">
+          <h4>Renewable Priority</h4>
+          <p>A water-aware, renewables-heavy buildout shifting capacity into nuclear, solar, and hydro.</p>
+          <canvas id="donutRenewable" class="small-canvas"></canvas>
+        </div>
+      </div>
+    </section>
 
-      <!-- Capacity & Water bars -->
-      <section>
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">2036 Snapshot · Status Quo Scenario</div>
-            <div class="section-title">Capacity &amp; Water Use by Energy Type</div>
-            <div class="section-subtitle">
-              Final-year summer capacity (MW) and annual water consumption (million gallons) drawn directly
-              from the IRP-based ENERGY and WATER tables for 2036 <em>Status Quo</em>.
+    <!-- CAPACITY & WATER – WITH CONTROLS -->
+    <section class="section">
+      <p class="section-kicker">Scenario Levers</p>
+      <div class="section-header">
+        <h2 class="section-title">Capacity & Water Use by Energy Type</h2>
+        <p class="section-note">Use the dropdowns to compare different IRP scenarios and years.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card-inner">
+          <h3>Capacity by Energy Type (MW)</h3>
+          <p>Portfolio composition across technologies for the selected year and scenario.</p>
+          <div class="controls-row">
+            <div class="control-group">
+              <label for="capScenario">Scenario</label>
+              <select id="capScenario">
+                <option>Status Quo</option>
+                <option>IRP Expansion</option>
+                <option>Renewable Priority</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="capYear">Year</label>
+              <select id="capYear"></select>
             </div>
           </div>
+          <canvas id="capacityChart"></canvas>
         </div>
-        <div class="grid-2">
-          <div class="card-soft">
-            <h3>Capacity by Energy Type (MW)</h3>
-            <div id="capacityBar" class="chart"></div>
-            <p class="small-text">
-              Uses 2036 ENERGY values: Nuclear 3,931 · Gas 14,414 · Coal 5,241 · Hydro 1,638 ·
-              Solar 4,586 · Other 2,948 MW.
-            </p>
-          </div>
-          <div class="card-soft">
-            <h3>Water Consumption by Energy Type (Million Gallons)</h3>
-            <div id="waterBar" class="chart"></div>
-            <p class="small-text">
-              Uses 2036 WATER values: Nuclear 21,729 · Gas 9,800 · Coal 1,735 · Hydro 59 ·
-              Solar 229 · Other 184 million gallons.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      <!-- Monte Carlo fan chart -->
-      <section id="monte">
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">Uncertainty</div>
-            <div class="section-title">Monte Carlo Projection: Total Summer Capacity</div>
-            <div class="section-subtitle">
-              P10–P90 envelopes for total summer capacity (MW) from 2025–2036, based on Monte Carlo
-              draws around IRP assumptions. The median (P50) path roughly tracks IRP planning,
-              while tails show high-growth and low-growth demand futures.
+        <div class="card-inner">
+          <h3>Water Consumption by Energy Type (Million Gallons)</h3>
+          <p>Modeled annual water consumption associated with the same portfolio.</p>
+          <div class="controls-row">
+            <div class="control-group">
+              <label for="waterScenario">Scenario</label>
+              <select id="waterScenario">
+                <option>Status Quo</option>
+                <option>IRP Expansion</option>
+                <option>Renewable Priority</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="waterYear">Year</label>
+              <select id="waterYear"></select>
             </div>
           </div>
+          <canvas id="waterChart"></canvas>
         </div>
-        <div class="card-soft">
-          <div id="monteCarlo" class="chart-tall"></div>
-          <p class="small-text">
-            Percentiles are sourced directly from the P10–P90 table provided (no re-calculation here).
-          </p>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Capacity mix by scenario donut with slider -->
-      <section>
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">Portfolio Shape</div>
-            <div class="section-title">2036 Capacity Mix by Scenario</div>
-            <div class="section-subtitle">
-              Donut shows how the 2036 portfolio is distributed across resources under each scenario.
-              Use the slider to toggle between <strong>Status Quo</strong>,
-              <strong>IRP Expansion</strong>, and <strong>Renewable Priority</strong>.
-            </div>
+    <!-- MONTE CARLO -->
+    <section class="section">
+      <p class="section-kicker">Uncertainty & Load Growth</p>
+      <div class="section-header">
+        <h2 class="section-title">Total Summer Capacity Needs – Monte Carlo Distribution</h2>
+        <p class="section-note">P10–P90 fan chart of simulated capacity requirements under AI-driven, water-constrained growth.</p>
+      </div>
+
+      <div class="card-inner">
+        <h3>2025–2036 Capacity Distribution</h3>
+        <p>P50 represents the median case; P10 and P90 bound a plausible uncertainty envelope.</p>
+
+        <div class="controls-row">
+          <div class="control-group">
+            <label for="mcYearSlider">Highlight year</label>
+            <input id="mcYearSlider" type="range" min="2025" max="2036" step="1" value="2030" />
           </div>
         </div>
 
-        <div class="card-soft">
-          <div id="capacityMixDonut" class="chart-tall"></div>
-          <div class="small-text">
-            <span class="scenario-label" id="scenarioLabel">Scenario: Status Quo</span>
-          </div>
-          <input
-            type="range"
-            id="scenarioSlider"
-            min="0"
-            max="2"
-            step="1"
-            value="0"
-          />
-          <div class="slider-labels">
-            <span>0 · Status Quo</span>
-            <span>1 · IRP Expansion</span>
-            <span>2 · Renewable Priority</span>
-          </div>
-        </div>
-      </section>
+        <canvas id="monteCarloChart"></canvas>
+        <div id="mcSummary" class="mc-summary"></div>
+      </div>
+    </section>
 
-      <!-- Policy heat map -->
-      <section>
-        <div class="section-header">
-          <div>
-            <div class="section-kicker">Policy &amp; Scenario Implications</div>
-            <div class="section-title">
-              Policy Options: Reliability, Water, Cost, Feasibility (1–5)
-            </div>
-          </div>
+    <!-- POLICY HEATMAP -->
+    <section class="section">
+      <p class="section-kicker">Policy & Scenario Implications</p>
+      <div class="section-header">
+        <h2 class="section-title">Policy Options: Reliability, Water, Cost, Feasibility (1–5)</h2>
+        <p class="section-note">Relative scoring of candidate policy levers under Georgia’s evolving water–energy nexus.</p>
+      </div>
+
+      <div class="card-inner">
+        <h3>Policy–Impact Matrix</h3>
+        <p>Scores reflect directional performance: 1 = low / adverse, 5 = high / favorable.</p>
+
+        <div class="policy-heatmap">
+          <table class="policy-table">
+            <thead>
+              <tr>
+                <th>Policy Option</th>
+                <th>Reliability</th>
+                <th>Water Stress ↓</th>
+                <th>Cost</th>
+                <th>Feasibility</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Demand-Side Management</td>
+                <td data-score="3">3</td>
+                <td data-score="3">3</td>
+                <td data-score="4">4</td>
+                <td data-score="5">5</td>
+              </tr>
+              <tr>
+                <td>Gas Expansion</td>
+                <td data-score="5">5</td>
+                <td data-score="1">1</td>
+                <td data-score="3">3</td>
+                <td data-score="5">5</td>
+              </tr>
+              <tr>
+                <td>Renewable Expansion</td>
+                <td data-score="4">4</td>
+                <td data-score="4">4</td>
+                <td data-score="3">3</td>
+                <td data-score="5">5</td>
+              </tr>
+              <tr>
+                <td>Closed-loop Cooling</td>
+                <td data-score="5">5</td>
+                <td data-score="5">5</td>
+                <td data-score="3">3</td>
+                <td data-score="4">4</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="card-soft">
-          <div id="policyHeatmap" class="chart-tall"></div>
-          <p class="small-text">
-            Policy scoring across reliability, water stress reduction (higher score = less stress),
-            cost, and feasibility on a qualitative 1–5 scale.
-          </p>
-        </div>
-
-        <div class="grid-2" style="margin-top: 10px;">
-          <div class="card-soft">
-            <h3>6.3 Policy–Impact Matrix</h3>
-            <p>
-              To evaluate relative outcomes, each policy action was scored from 1 (low) to 5 (high)
-              across four criteria: energy reliability, water stress reduction, economic cost, and
-              implementation feasibility. The heat map summarizes those scores for:
-              Demand-Side Management, Gas Expansion, Renewable Expansion, and Closed-loop Cooling.
-            </p>
-          </div>
-          <div class="card-soft">
-            <h3>6.4 Interpretation</h3>
-            <p>
-              Sensitivity results demonstrate that renewable expansion and closed-loop cooling
-              deliver the most significant co-benefits across both energy reliability and water
-              conservation. In contrast, aggressive gas expansion increases both reliability and
-              water stress, while demand-side management remains the most cost-effective strategy
-              with broad feasibility. These findings affirm the need for adaptive, multi-sector
-              governance as Georgia experiences rapid AI-driven industrial growth. Embedding water-
-              budgeting standards and renewable incentives can enhance long-term sustainability.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <footer>
-        Georgia Power 2025 IRP · Student analysis – for educational use only.
-      </footer>
-    </main>
+        <p class="footnote">
+          Sensitivity results show that renewable expansion and closed-loop cooling provide the strongest co-benefits for both reliability and water conservation.
+          Aggressive gas build-out improves reliability but deepens water stress, while demand-side management remains the most cost-effective and broadly feasible lever.
+        </p>
+      </div>
+    </section>
   </div>
 
   <script>
-    // ---------- Shared labels ----------
-    const energyTypes = ["Nuclear", "Natural Gas", "Coal", "Hydro", "Solar", "Other"];
+    // -----------------------
+    // RAW DATA FROM USER
+    // -----------------------
 
-    // ---------- Capacity & Water bar charts (2036, Status Quo) ----------
-    const cap2036StatusQuo = [3930.98472, 14413.61064, 5241.31296, 1637.9103, 4586.14884, 2948.23854];
-    const water2036StatusQuo = [21729.0294, 9800.0468, 1734.87459, 59.1858887, 228.995584, 183.988482];
+    const energyData = [
+      // Status Quo
+      {year:2025, scenario:"Status Quo", nuclear:2563.94472, gas:9401.13064, coal:3418.59296, hydro:1068.3103, solar:2991.26884, other:1922.95854, total:21366.206},
+      {year:2026, scenario:"Status Quo", nuclear:2541.14472, gas:9317.53064, coal:3388.19296, hydro:1058.8103, solar:2964.66884, other:1905.85854, total:21176.206},
+      {year:2027, scenario:"Status Quo", nuclear:2465.78472, gas:9041.21064, coal:3287.71296, hydro:1027.4103, solar:2876.74884, other:1849.33854, total:20548.206},
+      {year:2028, scenario:"Status Quo", nuclear:2712.02472, gas:9944.09064, coal:3616.03296, hydro:1130.0103, solar:3164.02884, other:2034.01854, total:22600.206},
+      {year:2029, scenario:"Status Quo", nuclear:3037.70472, gas:11138.25064, coal:4050.27296, hydro:1265.7103, solar:3543.98884, other:2278.27854, total:25314.206},
+      {year:2030, scenario:"Status Quo", nuclear:3364.34472, gas:12335.93064, coal:4485.79296, hydro:1401.8103, solar:3925.06884, other:2523.25854, total:28036.206},
+      {year:2031, scenario:"Status Quo", nuclear:3449.42472, gas:12647.89064, coal:4599.23296, hydro:1437.2603, solar:4024.32884, other:2587.06854, total:28745.206},
+      {year:2032, scenario:"Status Quo", nuclear:3497.78472, gas:12825.21064, coal:4663.71296, hydro:1457.4103, solar:4080.74884, other:2623.33854, total:29148.206},
+      {year:2033, scenario:"Status Quo", nuclear:3557.30472, gas:13043.45064, coal:4743.07296, hydro:1482.2103, solar:4150.18884, other:2667.97854, total:29644.206},
+      {year:2034, scenario:"Status Quo", nuclear:3598.82472, gas:13195.69064, coal:4798.43296, hydro:1499.5103, solar:4198.62884, other:2699.11854, total:29990.206},
+      {year:2035, scenario:"Status Quo", nuclear:3894.86472, gas:14281.17064, coal:5193.15296, hydro:1622.8603, solar:4544.00884, other:2921.14854, total:32457.206},
+      {year:2036, scenario:"Status Quo", nuclear:3930.98472, gas:14413.61064, coal:5241.31296, hydro:1637.9103, solar:4586.14884, other:2948.23854, total:32758.206},
 
-    Plotly.newPlot(
-      "capacityBar",
-      [
-        {
-          type: "bar",
-          x: energyTypes,
-          y: cap2036StatusQuo,
-          name: "Capacity (MW)",
-          marker: { color: "#4fa9ff" }
-        }
-      ],
-      {
-        margin: { t: 10, r: 10, b: 40, l: 50 },
-        paper_bgcolor: "rgba(0,0,0,0)",
-        plot_bgcolor: "rgba(0,0,0,0)",
-        xaxis: { tickfont: { color: "#e5e7eb" } },
-        yaxis: {
-          title: "MW",
-          gridcolor: "rgba(148,163,184,0.25)",
-          tickfont: { color: "#e5e7eb" }
-        },
-        showlegend: false
-      },
-      { responsive: true }
-    );
+      // IRP Expansion
+      {year:2025, scenario:"IRP Expansion", nuclear:2563.94472, gas:9401.13064, coal:3418.59296, hydro:1068.3101, solar:2991.26884, other:1922.95854, total:21366.2058},
+      {year:2026, scenario:"IRP Expansion", nuclear:3811.71708, gas:9952.81682, coal:2117.6206, hydro:1482.33442, solar:3388.19296, other:423.52412, total:21176.206},
+      {year:2027, scenario:"IRP Expansion", nuclear:3698.67708, gas:9657.65682, coal:2054.8206, hydro:1438.37442, solar:3287.71296, other:410.96412, total:20548.206},
+      {year:2028, scenario:"IRP Expansion", nuclear:4068.03708, gas:10622.09682, coal:2260.0206, hydro:1582.01442, solar:3616.03296, other:452.00412, total:22600.206},
+      {year:2029, scenario:"IRP Expansion", nuclear:4556.55708, gas:11897.67682, coal:2531.4206, hydro:1771.99442, solar:4050.27296, other:506.28412, total:25314.206},
+      {year:2030, scenario:"IRP Expansion", nuclear:5046.51708, gas:13177.01682, coal:2803.6206, hydro:1962.53442, solar:4485.79296, other:560.72412, total:28036.206},
+      {year:2031, scenario:"IRP Expansion", nuclear:5174.13708, gas:13510.24682, coal:2874.5206, hydro:2012.16442, solar:4599.23296, other:574.90412, total:28745.206},
+      {year:2032, scenario:"IRP Expansion", nuclear:5246.67708, gas:13699.65682, coal:2914.8206, hydro:2040.37442, solar:4663.71296, other:582.96412, total:29148.206},
+      {year:2033, scenario:"IRP Expansion", nuclear:5335.95708, gas:13932.77682, coal:2964.4206, hydro:2075.09442, solar:4743.07296, other:592.88412, total:29644.206},
+      {year:2034, scenario:"IRP Expansion", nuclear:5398.23708, gas:14095.39682, coal:2999.0206, hydro:2099.31442, solar:4798.43296, other:599.80412, total:29990.206},
+      {year:2035, scenario:"IRP Expansion", nuclear:5842.29708, gas:15254.88682, coal:3245.7206, hydro:2272.00442, solar:5193.15296, other:649.14412, total:32457.206},
+      {year:2036, scenario:"IRP Expansion", nuclear:5896.47708, gas:15396.35682, coal:3275.8206, hydro:2293.07442, solar:5241.31296, other:655.16412, total:32758.206},
 
-    Plotly.newPlot(
-      "waterBar",
-      [
-        {
-          type: "bar",
-          x: energyTypes,
-          y: water2036StatusQuo,
-          name: "Water Use (Mgal)",
-          marker: { color: "#42e6a4" }
-        }
-      ],
-      {
-        margin: { t: 10, r: 10, b: 40, l: 60 },
-        paper_bgcolor: "rgba(0,0,0,0)",
-        plot_bgcolor: "rgba(0,0,0,0)",
-        xaxis: { tickfont: { color: "#e5e7eb" } },
-        yaxis: {
-          title: "Million Gallons",
-          gridcolor: "rgba(148,163,184,0.25)",
-          tickfont: { color: "#e5e7eb" }
-        },
-        legend: {
-          font: { color: "#e5e7eb", size: 11 }
-        }
-      },
-      { responsive: true }
-    );
-
-    // ---------- Monte Carlo fan chart ----------
-    const years = [
-      2025, 2026, 2027, 2028, 2029, 2030,
-      2031, 2032, 2033, 2034, 2035, 2036
+      // Renewable Priority
+      {year:2025, scenario:"Renewable Priority", nuclear:2563.94472, gas:9401.13064, coal:3418.59296, hydro:1068.3101, solar:2991.26884, other:1922.95854, total:21366.2058},
+      {year:2026, scenario:"Renewable Priority", nuclear:5294.0515, gas:7411.6721, coal:423.52412, hydro:2541.14472, solar:4870.52738, other:635.28618, total:21176.206},
+      {year:2027, scenario:"Renewable Priority", nuclear:5137.0515, gas:7191.8721, coal:410.96412, hydro:2465.78472, solar:4726.08738, other:616.44618, total:20548.206},
+      {year:2028, scenario:"Renewable Priority", nuclear:5650.0515, gas:7910.0721, coal:452.00412, hydro:2712.02472, solar:5198.04738, other:678.00618, total:22600.206},
+      {year:2029, scenario:"Renewable Priority", nuclear:6328.5515, gas:8859.9721, coal:506.28412, hydro:3037.70472, solar:5822.26738, other:759.42618, total:25314.206},
+      {year:2030, scenario:"Renewable Priority", nuclear:7009.0515, gas:9812.6721, coal:560.72412, hydro:3364.34472, solar:6448.32738, other:841.08618, total:28036.206},
+      {year:2031, scenario:"Renewable Priority", nuclear:7186.3015, gas:10060.8221, coal:574.90412, hydro:3449.42472, solar:6611.39738, other:862.35618, total:28745.206},
+      {year:2032, scenario:"Renewable Priority", nuclear:7287.0515, gas:10201.8721, coal:582.96412, hydro:3497.78472, solar:6704.08738, other:874.44618, total:29148.206},
+      {year:2033, scenario:"Renewable Priority", nuclear:7411.0515, gas:10375.4721, coal:592.88412, hydro:3557.30472, solar:6818.16738, other:889.32618, total:29644.206},
+      {year:2034, scenario:"Renewable Priority", nuclear:7497.5515, gas:10496.5721, coal:599.80412, hydro:3598.82472, solar:6897.74738, other:899.70618, total:29990.206},
+      {year:2035, scenario:"Renewable Priority", nuclear:8114.3015, gas:11360.0221, coal:649.14412, hydro:3894.86472, solar:7465.15738, other:973.71618, total:32457.206},
+      {year:2036, scenario:"Renewable Priority", nuclear:8189.5515, gas:11465.3721, coal:655.16412, hydro:3930.98472, solar:7534.38738, other:982.74618, total:32758.206}
     ];
 
-    const P10 = [
-      20855.98494, 21854.29543, 22857.38224, 23875.85319,
-      24859.37488, 25834.33504, 26837.19457, 27828.50568,
-      28807.27174, 29797.76419, 30795.90727, 31779.00693
-    ];
-    const P25 = [
-      21067.42065, 22216.31717, 23374.45451, 24526.08174,
-      25679.26725, 26825.542, 27993.94516, 29133.34982,
-      30299.26162, 31442.73874, 32553.20932, 33680.36977
-    ];
-    const P50 = [
-      21330.44021, 22681.73921, 24035.95514, 25390.81321,
-      26772.29233, 28123.29023, 29492.3458, 30848.00007,
-      32214.02215, 33579.3814, 34930.81634, 36296.44031
-    ];
-    const P75 = [
-      21607.60029, 23129.77782, 24652.19488, 26172.6204,
-      27671.19438, 29172.49304, 30691.23516, 32189.86799,
-      33701.94976, 35213.76735, 36695.59414, 38173.8363
-    ];
-    const P90 = [
-      21883.12595, 23577.59606, 25277.16889, 26981.17803,
-      28689.17709, 30417.51022, 32125.26629, 33795.52441,
-      35517.90382, 37201.49993, 38936.92902, 40623.5531
+    const waterData = [
+      // Status Quo
+      {year:2025, scenario:"Status Quo", nuclear:14172.538, gas:6391.98064, coal:1131.55427, hydro:38.6033927, solar:149.360036, other:120.004612, total:22004.0409},
+      {year:2026, scenario:"Status Quo", nuclear:14046.508, gas:6335.13965, coal:1121.49187, hydro:38.2601102, solar:148.031845, other:118.937466, total:21808.3689},
+      {year:2027, scenario:"Status Quo", nuclear:13629.9458, gas:6147.26522, coal:1088.23299, hydro:37.1254712, solar:143.641823, other:115.410265, total:21161.6216},
+      {year:2028, scenario:"Status Quo", nuclear:14991.0694, gas:6761.14792, coal:1196.90691, hydro:40.8329222, solar:157.986288, other:126.935449, total:23274.8789},
+      {year:2029, scenario:"Status Quo", nuclear:16791.308, gas:7573.0766, coal:1340.64035, hydro:45.7364417, solar:176.958451, other:142.178797, total:26069.8986},
+      {year:2030, scenario:"Status Quo", nuclear:18596.8531, gas:8387.39859, coal:1484.79747, hydro:50.6544152, solar:195.986537, other:157.467078, total:28873.1572},
+      {year:2031, scenario:"Status Quo", nuclear:19067.1438, gas:8599.50524, coal:1522.34611, hydro:51.9354009, solar:200.942788, other:161.44922, total:29603.3226},
+      {year:2032, scenario:"Status Quo", nuclear:19334.46, gas:8720.06797, coal:1543.68899, hydro:52.6635212, solar:203.759951, other:163.712695, total:30018.3532},
+      {year:2033, scenario:"Status Quo", nuclear:19663.4646, gas:8868.45287, coal:1569.95715, hydro:53.5596692, solar:207.227229, other:166.498509, total:30529.16},
+      {year:2034, scenario:"Status Quo", nuclear:19892.9718, gas:8971.96331, coal:1588.28131, hydro:54.1848047, solar:209.645935, other:168.441839, total:30885.489},
+      {year:2035, scenario:"Status Quo", nuclear:21529.3714, gas:9709.9987, coal:1718.93363, hydro:58.6420569, solar:226.891449, other:182.297897, total:33426.1351},
+      {year:2036, scenario:"Status Quo", nuclear:21729.0294, gas:9800.0468, coal:1734.87459, hydro:59.1858887, solar:228.995584, other:183.988482, total:33736.1207},
+
+      // IRP Expansion
+      {year:2025, scenario:"IRP Expansion", nuclear:14172.538, gas:6391.98064, coal:6809.82938, hydro:38.6033855, solar:149.360036, other:120.004612, total:27682.316},
+      {year:2026, scenario:"IRP Expansion", nuclear:21069.762, gas:6767.08099, coal:4218.29541, hydro:53.5641543, solar:169.179251, other:26.4305479, total:32304.3123},
+      {year:2027, scenario:"IRP Expansion", nuclear:20444.9187, gas:6566.39694, coal:4093.19795, hydro:51.9756597, solar:164.162084, other:25.6467255, total:31346.298},
+      {year:2028, scenario:"IRP Expansion", nuclear:22486.6041, gas:7222.13528, coal:4501.95588, hydro:57.1660911, solar:180.555758, other:28.2078776, total:34476.625},
+      {year:2029, scenario:"IRP Expansion", nuclear:25186.962, gas:8089.42274, coal:5042.58406, hydro:64.0310184, solar:202.238229, other:31.5952883, total:38616.8333},
+      {year:2030, scenario:"IRP Expansion", nuclear:27895.2796, gas:8959.26668, coal:5584.80584, hydro:70.9161813, solar:223.984614, other:34.992684, total:42769.2456},
+      {year:2031, scenario:"IRP Expansion", nuclear:28600.7158, gas:9185.83514, coal:5726.03848, hydro:72.7095613, solar:229.6489, other:35.8776045, total:43850.8255},
+      {year:2032, scenario:"IRP Expansion", nuclear:29001.6901, gas:9314.61806, coal:5806.31599, hydro:73.7289297, solar:232.868516, other:36.3805988, total:44465.6021},
+      {year:2033, scenario:"IRP Expansion", nuclear:29495.1969, gas:9473.12011, coal:5905.11908, hydro:74.9835369, solar:236.831119, other:36.9996687, total:45222.2504},
+      {year:2034, scenario:"IRP Expansion", nuclear:29839.4577, gas:9583.68808, coal:5974.0422, hydro:75.8587266, solar:239.595355, other:37.4315199, total:45750.0735},
+      {year:2035, scenario:"IRP Expansion", nuclear:32294.0571, gas:10372.0441, coal:6465.46804, hydro:82.0988797, solar:259.304514, other:40.5106438, total:49513.4832},
+      {year:2036, scenario:"IRP Expansion", nuclear:32593.5441, gas:10468.2318, coal:6525.42717, hydro:82.8602442, solar:261.709239, other:40.8863293, total:49972.6589},
+
+      // Renewable Priority
+      {year:2025, scenario:"Renewable Priority", nuclear:14172.538, gas:6391.98064, coal:6809.82938, hydro:38.6033855, solar:149.360036, other:120.004612, total:27682.316},
+      {year:2026, scenario:"Renewable Priority", nuclear:29263.5583, gas:5039.31563, coal:843.659081, hydro:91.8242645, solar:243.195173, other:39.6458218, total:35521.1983},
+      {year:2027, scenario:"Renewable Priority", nuclear:28395.7204, gas:4889.87006, coal:818.63959, hydro:89.1011309, solar:235.982995, other:38.4700883, total:34467.7843},
+      {year:2028, scenario:"Renewable Priority", nuclear:31231.3946, gas:5378.18585, coal:900.391177, hydro:97.9990133, solar:259.548902, other:42.3118164, total:37909.8314},
+      {year:2029, scenario:"Renewable Priority", nuclear:34981.8916, gas:6024.03821, coal:1008.51681, hydro:109.76746, solar:290.717455, other:47.3929325, total:42462.3245},
+      {year:2030, scenario:"Renewable Priority", nuclear:38743.4439, gas:6671.79433, coal:1116.96117, hydro:121.570597, solar:321.977883, other:52.489026, total:47028.2369},
+      {year:2031, scenario:"Renewable Priority", nuclear:39723.2163, gas:6840.51553, coal:1145.2077, hydro:124.644962, solar:330.120294, other:53.8164067, total:48217.5212},
+      {year:2032, scenario:"Renewable Priority", nuclear:40280.1251, gas:6936.4177, coal:1161.2632, hydro:126.392451, solar:334.748491, other:54.5708982, total:48893.5178},
+      {year:2033, scenario:"Renewable Priority", nuclear:40965.5512, gas:7054.45115, coal:1181.02382, hydro:128.543206, solar:340.444734, other:55.499503, total:49725.5136},
+      {year:2034, scenario:"Renewable Priority", nuclear:41443.6912, gas:7136.789, coal:1194.80844, hydro:130.043531, solar:344.418322, other:56.1472798, total:50305.8978},
+      {year:2035, scenario:"Renewable Priority", nuclear:44852.8571, gas:7723.8626, coal:1293.09361, hydro:140.740937, solar:372.750238, other:60.7659656, total:54444.0704},
+      {year:2036, scenario:"Renewable Priority", nuclear:45268.8112, gas:7795.49177, coal:1305.08543, hydro:142.046133, solar:376.207031, other:61.329494, total:54948.9711}
     ];
 
-    const monteTraces = [
-      {
-        x: years,
-        y: P10,
-        mode: "lines",
-        name: "P10",
-        line: { color: "rgba(148,163,184,0.5)", width: 1.5 }
-      },
-      {
-        x: years,
-        y: P25,
-        mode: "lines",
-        name: "P25",
-        fill: "tonexty",
-        line: { color: "rgba(79,172,254,0.5)", width: 1.5 }
-      },
-      {
-        x: years,
-        y: P50,
-        mode: "lines",
-        name: "P50 (Median)",
-        fill: "tonexty",
-        line: { color: "#42e6a4", width: 2.6 }
-      },
-      {
-        x: years,
-        y: P75,
-        mode: "lines",
-        name: "P75",
-        fill: "tonexty",
-        line: { color: "rgba(79,172,254,0.5)", width: 1.5 }
-      },
-      {
-        x: years,
-        y: P90,
-        mode: "lines",
-        name: "P90",
-        fill: "tonexty",
-        line: { color: "rgba(148,163,184,0.5)", width: 1.5 }
-      }
+    const monteCarloData = [
+      {year:2025, p10:20855.98494, p25:21067.42065, p50:21330.44021, p75:21607.60029, p90:21883.12595},
+      {year:2026, p10:21854.29543, p25:22216.31717, p50:22681.73921, p75:23129.77782, p90:23577.59606},
+      {year:2027, p10:22857.38224, p25:23374.45451, p50:24035.95514, p75:24652.19488, p90:25277.16889},
+      {year:2028, p10:23875.85319, p25:24526.08174, p50:25390.81321, p75:26172.6204, p90:26981.17803},
+      {year:2029, p10:24859.37488, p25:25679.26725, p50:26772.29233, p75:27671.19438, p90:28689.17709},
+      {year:2030, p10:25834.33504, p25:26825.542, p50:28123.29023, p75:29172.49304, p90:30417.51022},
+      {year:2031, p10:26837.19457, p25:27993.94516, p50:29492.3458, p75:30691.23516, p90:32125.26629},
+      {year:2032, p10:27828.50568, p25:29133.34982, p50:30848.00007, p75:32189.86799, p90:33795.52441},
+      {year:2033, p10:28807.27174, p25:30299.26162, p50:32214.02215, p75:33701.94976, p90:35517.90382},
+      {year:2034, p10:29797.76419, p25:31442.73874, p50:33579.3814, p75:35213.76735, p90:37201.49993},
+      {year:2035, p10:30795.90727, p25:32553.20932, p50:34930.81634, p75:36695.59414, p90:38936.92902},
+      {year:2036, p10:31779.00693, p25:33680.36977, p50:36296.44031, p75:38173.8363, p90:40623.5531}
     ];
 
-    Plotly.newPlot(
-      "monteCarlo",
-      monteTraces,
-      {
-        margin: { t: 10, r: 20, b: 40, l: 60 },
-        paper_bgcolor: "rgba(0,0,0,0)",
-        plot_bgcolor: "rgba(0,0,0,0)",
-        xaxis: {
-          title: "Year",
-          tickmode: "linear",
-          dtick: 1,
-          tickfont: { color: "#e5e7eb" },
-          gridcolor: "rgba(148,163,184,0.15)"
-        },
-        yaxis: {
-          title: "Total Summer Capacity (MW)",
-          tickfont: { color: "#e5e7eb" },
-          gridcolor: "rgba(148,163,184,0.25)"
-        },
-        legend: {
-          orientation: "h",
-          yanchor: "bottom",
-          y: 1.02,
-          xanchor: "right",
-          x: 1,
-          font: { color: "#e5e7eb", size: 11 }
-        }
-      },
-      { responsive: true }
-    );
+    const years = Array.from({length: 12}, (_, i) => 2025 + i);
+    const scenarios = ["Status Quo", "IRP Expansion", "Renewable Priority"];
+    const types = ["nuclear", "gas", "coal", "hydro", "solar", "other"];
+    const typeLabels = ["Nuclear", "Natural Gas", "Coal", "Hydro", "Solar", "Other"];
 
-    // ---------- Capacity mix donut with scenario slider ----------
-    const scenarioData = {
-      0: {  // Status Quo 2036
-        name: "Status Quo",
-        values: [3930.98472, 14413.61064, 5241.31296, 1637.9103, 4586.14884, 2948.23854]
-      },
-      1: {  // IRP Expansion 2036
-        name: "IRP Expansion",
-        values: [5896.47708, 15396.35682, 3275.8206, 2293.07442, 5241.31296, 655.16412]
-      },
-      2: {  // Renewable Priority 2036
-        name: "Renewable Priority",
-        values: [8189.5515, 11465.3721, 655.16412, 3930.98472, 7534.38738, 982.74618]
-      }
-    };
-
-    function makeDonutScenario(scenarioKey) {
-      const scenario = scenarioData[scenarioKey];
-      return [
-        {
-          type: "pie",
-          labels: energyTypes,
-          values: scenario.values,
-          hole: 0.6,
-          sort: false,
-          direction: "clockwise",
-          textinfo: "label+percent",
-          textposition: "inside",
-          hovertemplate: "%{label}<br>%{value:.0f} MW<br>%{percent:.1%}<extra></extra>",
-        }
-      ];
+    function findRow(data, scenario, year) {
+      return data.find(d => d.scenario === scenario && d.year === year);
     }
 
-    const donutLayout = {
-      margin: { t: 10, r: 10, b: 10, l: 10 },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(0,0,0,0)",
-      showlegend: false
-    };
+    function findEnergyRow(scenario, year) {
+      return energyData.find(d => d.scenario === scenario && d.year === year);
+    }
+    function findWaterRow(scenario, year) {
+      return waterData.find(d => d.scenario === scenario && d.year === year);
+    }
 
-    Plotly.newPlot("capacityMixDonut", makeDonutScenario(0), donutLayout, {
-      responsive: true
+    // -----------------------
+    // INIT SELECTS
+    // -----------------------
+    const capYearSelect = document.getElementById("capYear");
+    const waterYearSelect = document.getElementById("waterYear");
+
+    years.forEach(y => {
+      const opt1 = document.createElement("option");
+      opt1.value = opt1.textContent = y;
+      capYearSelect.appendChild(opt1);
+
+      const opt2 = document.createElement("option");
+      opt2.value = opt2.textContent = y;
+      waterYearSelect.appendChild(opt2);
     });
 
-    const scenarioSlider = document.getElementById("scenarioSlider");
-    const scenarioLabel = document.getElementById("scenarioLabel");
+    capYearSelect.value = "2030";
+    waterYearSelect.value = "2030";
 
-    scenarioSlider.addEventListener("input", function () {
-      const key = this.value;
-      const scenario = scenarioData[key];
-      scenarioLabel.textContent = "Scenario: " + scenario.name;
-      Plotly.react("capacityMixDonut", makeDonutScenario(key), donutLayout);
-    });
+    // -----------------------
+    // CAPACITY & WATER CHARTS
+    // -----------------------
 
-    // ---------- Policy heatmap ----------
-    const policyNames = [
-      "Demand-Side Management",
-      "Gas Expansion",
-      "Renewable Expansion",
-      "Closed-loop Cooling"
-    ];
-    const criteria = ["Reliability", "Water Stress ↓", "Cost", "Feasibility"];
+    function makePerTypeDatasets(row, labelBase) {
+      // 6 datasets, each only fills its own index to create one bar per energy type.
+      return types.map((key, idx) => {
+        const arr = [null, null, null, null, null, null];
+        arr[idx] = row[key];
+        return {
+          label: typeLabels[idx],
+          data: arr,
+          backgroundColor: undefined, // let Chart.js auto-assign
+        };
+      });
+    }
 
-    // Scores 1–5 (higher is better, except Water Stress where higher = less stress)
-    const policyScores = [
-      [3, 4, 5, 5], // DSM
-      [5, 1, 3, 4], // Gas heavy
-      [4, 4, 3, 4], // Renewables
-      [4, 5, 2, 3]  // Closed-loop cooling
-    ];
-
-    Plotly.newPlot(
-      "policyHeatmap",
-      [
-        {
-          type: "heatmap",
-          z: policyScores,
-          x: criteria,
-          y: policyNames,
-          colorscale: [
-            [0.0, "#b91c1c"],
-            [0.25, "#f97316"],
-            [0.5, "#facc15"],
-            [0.75, "#4ade80"],
-            [1.0, "#16a34a"]
-          ],
-          zmin: 1,
-          zmax: 5,
-          colorbar: {
-            title: "Score",
-            tickfont: { color: "#e5e7eb" },
-            titlefont: { color: "#e5e7eb" }
-          },
-          hovertemplate:
-            "%{y}<br>%{x}: %{z}/5<extra></extra>"
-        }
-      ],
-      {
-        margin: { t: 10, r: 60, b: 40, l: 160 },
-        paper_bgcolor: "rgba(0,0,0,0)",
-        plot_bgcolor: "rgba(0,0,0,0)",
-        xaxis: {
-          tickfont: { color: "#e5e7eb", size: 11 }
+    const baseBarOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: false,
+          grid: { color: "rgba(148,163,184,0.12)" },
+          ticks: { color: "#cbd5f5" }
         },
-        yaxis: {
-          tickfont: { color: "#e5e7eb", size: 11 }
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(148,163,184,0.16)" },
+          ticks: { color: "#cbd5f5" }
         }
       },
-      { responsive: true }
-    );
+      plugins: {
+        legend: {
+          labels: { color: "#e2e8f0", font: { size: 10 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString(undefined,{maximumFractionDigits:0})}`
+          }
+        }
+      }
+    };
+
+    const capacityCtx = document.getElementById("capacityChart").getContext("2d");
+    const waterCtx = document.getElementById("waterChart").getContext("2d");
+
+    const initialCapRow = findEnergyRow("Status Quo", 2030);
+    const initialWaterRow = findWaterRow("Status Quo", 2030);
+
+    const capacityChart = new Chart(capacityCtx, {
+      type: "bar",
+      data: {
+        labels: typeLabels,
+        datasets: makePerTypeDatasets(initialCapRow, "Capacity")
+      },
+      options: {
+        ...baseBarOptions,
+        plugins: {
+          ...baseBarOptions.plugins,
+          title: {
+            display: false
+          }
+        }
+      }
+    });
+
+    const waterChart = new Chart(waterCtx, {
+      type: "bar",
+      data: {
+        labels: typeLabels,
+        datasets: makePerTypeDatasets(initialWaterRow, "Water")
+      },
+      options: {
+        ...baseBarOptions,
+        plugins: {
+          ...baseBarOptions.plugins
+        }
+      }
+    });
+
+    function updateCapacityChart() {
+      const scenario = document.getElementById("capScenario").value;
+      const year = parseInt(capYearSelect.value, 10);
+      const row = findEnergyRow(scenario, year);
+      if (!row) return;
+
+      capacityChart.data.datasets = makePerTypeDatasets(row, "Capacity");
+      capacityChart.update();
+    }
+
+    function updateWaterChart() {
+      const scenario = document.getElementById("waterScenario").value;
+      const year = parseInt(waterYearSelect.value, 10);
+      const row = findWaterRow(scenario, year);
+      if (!row) return;
+
+      waterChart.data.datasets = makePerTypeDatasets(row, "Water");
+      waterChart.update();
+    }
+
+    document.getElementById("capScenario").addEventListener("change", updateCapacityChart);
+    capYearSelect.addEventListener("change", updateCapacityChart);
+    document.getElementById("waterScenario").addEventListener("change", updateWaterChart);
+    waterYearSelect.addEventListener("change", updateWaterChart);
+
+    // -----------------------
+    // DONUTS (2036 CAPACITY)
+    // -----------------------
+    function donutConfig(canvasId, scenario) {
+      const row2036 = findEnergyRow(scenario, 2036);
+      const ctx = document.getElementById(canvasId).getContext("2d");
+      return new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: typeLabels,
+          datasets: [{
+            label: "Capacity (MW)",
+            data: types.map(k => row2036[k]),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "60%",
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: { color: "#e2e8f0", font: { size: 9 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.label}: ${ctx.raw.toLocaleString(undefined,{maximumFractionDigits:0})} MW`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    donutConfig("donutStatusQuo", "Status Quo");
+    donutConfig("donutIRP", "IRP Expansion");
+    donutConfig("donutRenewable", "Renewable Priority");
+
+    // -----------------------
+    // MONTE CARLO CHART
+    // -----------------------
+    const mcCtx = document.getElementById("monteCarloChart").getContext("2d");
+
+    const mcChart = new Chart(mcCtx, {
+      type: "line",
+      data: {
+        labels: monteCarloData.map(d => d.year),
+        datasets: [
+          {
+            label: "P10 (Low)",
+            data: monteCarloData.map(d => d.p10),
+            borderWidth: 1.2,
+            fill: false
+          },
+          {
+            label: "P25",
+            data: monteCarloData.map(d => d.p25),
+            borderWidth: 1.2,
+            borderDash: [4,3],
+            fill: false
+          },
+          {
+            label: "P50 (Median)",
+            data: monteCarloData.map(d => d.p50),
+            borderWidth: 2,
+            fill: false
+          },
+          {
+            label: "P75",
+            data: monteCarloData.map(d => d.p75),
+            borderWidth: 1.2,
+            borderDash: [4,3],
+            fill: false
+          },
+          {
+            label: "P90 (High)",
+            data: monteCarloData.map(d => d.p90),
+            borderWidth: 1.2,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: { color: "rgba(148,163,184,0.16)" },
+            ticks: { color: "#cbd5f5" }
+          },
+          y: {
+            beginAtZero: false,
+            grid: { color: "rgba(148,163,184,0.18)" },
+            ticks: { color: "#cbd5f5" }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: "#e2e8f0", font: { size: 10 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString(undefined,{maximumFractionDigits:0})} MW`
+            }
+          }
+        }
+      }
+    });
+
+    const mcSlider = document.getElementById("mcYearSlider");
+    const mcSummaryEl = document.getElementById("mcSummary");
+
+    function updateMcSummary() {
+      const year = parseInt(mcSlider.value, 10);
+      const row = monteCarloData.find(d => d.year === year);
+      if (!row) return;
+      mcSummaryEl.textContent =
+        `In ${year}, median (P50) summer capacity need is ${row.p50.toLocaleString(undefined,{maximumFractionDigits:0})} MW ` +
+        `with a plausible range from ${row.p10.toLocaleString(undefined,{maximumFractionDigits:0})} MW (P10) ` +
+        `to ${row.p90.toLocaleString(undefined,{maximumFractionDigits:0})} MW (P90).`;
+    }
+
+    mcSlider.addEventListener("input", updateMcSummary);
+    mcSlider.value = "2030";
+    updateMcSummary();
+
+    // Initial sync of charts with default selects
+    updateCapacityChart();
+    updateWaterChart();
   </script>
 </body>
 </html>
