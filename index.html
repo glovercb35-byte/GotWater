@@ -1,3 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Georgia Power IRP Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #222;
+}
+header {
+    background: #003366;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+.section {
+    padding: 50px 12%;
+}
+.section h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+    color: #003366;
+}
+.chart-container {
+    margin-top: 25px;
+    margin-bottom: 60px;
+}
+.kpi-box {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+}
+.kpi {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 30px;
+    box-shadow: 0px 0px 10px #ddd;
+    font-size: 20px;
+    min-width: 200px;
+}
+.photo-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+}
+.photo-grid img {
+    width: 32%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px #ccc;
+}
+.caption {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+hr {
+    margin: 60px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    Georgia Power IRP Dashboard
+</header>
+
+<div class="section">
+    <h2>Project Overview</h2>
+    <p>
+    <strong>Got Water? Identifying Water Constraints Amid Growing Energy Demand in Georgia</strong><br>
+    Prepared for Cherry Street Energy, LLC<br>
+    By: Clarissa Hane, Natalie Pfaffman &amp; Chloe Glover — University of Georgia, SUST 4500S (Fall 2025)
+    </p>
+</div>
+
+<hr>
+
+<!-- ======================
+      ENERGY MIX + WATER + KPIs (AUTOPLAY)
+======================= -->
+
+<div class="section">
+    <h2>Status Quo Scenario</h2>
+
+    <div class="chart-container" id="sq_mix"></div>
+    <div class="chart-container" id="sq_capacity"></div>
+    <div class="chart-container" id="sq_water"></div>
+
+    <div class="kpi-box">
+        <div class="kpi" id="sq_kpi_energy"></div>
+        <div class="kpi" id="sq_kpi_water"></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="section">
+    <h2>IRP Expansion Scenario</h2>
+
+    <div class="chart-container" id="irp_mix"></div>
+    <div class="chart-container" id="irp_capacity"></div>
+    <div class="chart-container" id="irp_water"></div>
+
+    <div class="kpi-box">
+        <div class="kpi" id="irp_kpi_energy"></div>
+        <div class="kpi" id="irp_kpi_water"></div>
+    </div>
+</div>
+
+<hr>
+
+<div class="section">
+    <h2>Renewable Priority Scenario</h2>
+
+    <div class="chart-container" id="rp_mix"></div>
+    <div class="chart-container" id="rp_capacity"></div>
+    <div class="chart-container" id="rp_water"></div>
+
+    <div class="kpi-box">
+        <div class="kpi" id="rp_kpi_energy"></div>
+        <div class="kpi" id="rp_kpi_water"></div>
+    </div>
+</div>
+
+<hr>
+
+<!-- ======================
+      AI DATA CENTER SECTION
+======================= -->
+
+<div class="section">
+    <h2>AI Data Center Load Growth (2025–2036)</h2>
+    <p>
+        AI-driven hyperscale data centers are rapidly increasing statewide electricity and cooling water demand.
+        Georgia Power’s IRP forecasts up to <strong>8,200 MW</strong> of new load by 2036 attributed to AI computing.
+        Some campuses (e.g., Project Sail) may require <strong>9 million gallons/day</strong> for cooling — nearly one-third of Atlanta’s daily consumption.
+    </p>
+
+    <div class="chart-container" id="ai_load"></div>
+</div>
+
+<hr>
+
+<!-- ======================
+      POLICY IMPLICATIONS
+======================= -->
+
+<div class="section">
+    <h2>Policy Implications</h2>
+    <p>
+    Georgia faces complex trade-offs among load growth, water resources, and generation choices.  
+    Key decisions include:<br><br>
+    • Integrating low-water renewables to ease freshwater stress<br>
+    • Expanding recycled/closed-loop water systems for AI data centers<br>
+    • Coordinating water permitting with long-term IRP capacity commitments
+    </p>
+</div>
+
+<hr>
+
+<!-- ======================
+      ARCGIS VISUALIZATIONS
+======================= -->
+
+<div class="section">
+    <h2>ArcGIS Visualizations</h2>
+    <p style="margin-bottom:30px;">
+        High-level geospatial summaries illustrating energy and water distribution across Georgia.
+    </p>
+
+    <div class="photo-grid">
+        <div>
+            <img src="data.png" alt="Data Map">
+            <div class="caption">Power Data and Water</div>
+        </div>
+
+        <div>
+            <img src="power.png" alt="Power Map">
+            <div class="caption">Power Data and Water</div>
+        </div>
+
+        <div>
+            <img src="water.png" alt="Water Map">
+            <div class="caption">Power Data and Water</div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -220,28 +422,7 @@ document.querySelectorAll('nav.top a').forEach(a => {
 <body>
 
 <header>
-    
-<!-- ⭐⭐⭐ NEW SECTION YOU REQUESTED ⭐⭐⭐ -->
-
-<section id="arcgis" class="arcgis-section">
-    <h2>ArcGIS Visualizations</h2>
-
-    <h3>1. Data Centers</h3>
-    <img src="data.png" alt="Data Center Map">
-    <div class="caption">Planned and existing data center locations across Georgia.</div>
-
-    <h3>2. Power Infrastructure</h3>
-    <img src="power.png" alt="Power Infrastructure Map">
-    <div class="caption">Electric generating station locations across the state.</div>
-
-    <h3>3. Water Infrastructure</h3>
-    <img src="water.png" alt="Water Map">
-    <div class="caption">Major water station and resource areas across Georgia.</div>
-</section>
-
-<footer style="padding:40px; text-align:center; background:#1f2a44; color:white; margin-top:40px;">
-    © 2025 • Got Water? – Cherry Street Energy + UGA SUST4500S
-</footer>
+</script>
 
 </body>
-</html>
+</html>    
