@@ -12,6 +12,12 @@ body {
     margin: 0;
     background: #fafafa;
     color: #222;
+    /* Reduce global scale slightly for better fit */
+body {
+    zoom: 0.92;              /* Desktop browsers */
+    -moz-transform: scale(.92); /* Firefox fallback */
+    -moz-transform-origin: 0 0;
+}
 }
 header {
     background: #003366;
